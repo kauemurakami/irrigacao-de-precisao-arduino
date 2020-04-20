@@ -4,6 +4,7 @@
 
 /**
 PRESSÃO DE SATURAÇÃO DE VAPOR DE ÁGUA
+EQUAÇÃO DE TETENS
 **/
 
 double psva(double temperatura){

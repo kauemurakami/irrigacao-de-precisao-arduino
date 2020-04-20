@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "vector": "cpp"
+        "vector": "cpp",
+        "ctype.h": "c",
+        "stdio.h": "c"
     }
 }

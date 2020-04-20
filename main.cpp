@@ -2,6 +2,8 @@
 #include <locale.h>
 #include "psva.c"
 #include "pava.c"
+#include "dcsva.c"
+#include "penman.c"
 
 
 
@@ -21,12 +23,18 @@ int main(){
     double radiacSolar = 7.8;
     
     //RESULTADO DE FUNÇÕES
-    //PRESSÃO DE SATURAÇÃO DE VAPOR DE ÁGUA
+    //PRESSÃO DE SATURAÇÃO DE VAPOR DE ÁGUA Kpa
     double es =  psva(temperatMedia);
-    printf("%.2f PSVA", es);
-    //PRESSÃO ATUAL DE VAPOR DE ÁGUA
+    printf("PSVA %.2f ", es);
+    //PRESSÃO ATUAL DE VAPOR DE ÁGUA Kpa
     double ea = pava(umidadeRelativa, es);
-    printf("%.2f PAVA", ea);
+    printf("PAVA %.2f ", ea);
+    //DECLIVIDADE DE CURVA DE SATURAÇÃO DE VAPOR DE ÁGUA Kpa/⁰C
+    double s = dcsva(es, temperatMedia);
+    printf("DCSVA %.2f ", s);
+    //MÉTODO DE PENMAN MONTEITH FAO 56
+    double eto = penman(ea,es,s,temperatMedia,velocVento,radiacSolar, umidadeRelativa);
+    printf("ETo %.2f ", eto);
 
 }   
 
