@@ -1,6 +1,8 @@
 #include <iostream>
 #include <locale.h>
 #include "psva.c"
+#include "pava.c"
+
 
 
 //PRESSÃO DE SATURAÇÃO DE VAPOR DE ÁGUA
@@ -18,10 +20,13 @@ int main(){
     //MegaJoules
     double radiacSolar = 7.8;
     
+    //RESULTADO DE FUNÇÕES
     //PRESSÃO DE SATURAÇÃO DE VAPOR DE ÁGUA
-    double es =  psva(temperatMedia);   
-    printf("%f", psva(temperatMedia));
-
+    double es =  psva(temperatMedia);
+    printf("%.2f PSVA", es);
     //PRESSÃO ATUAL DE VAPOR DE ÁGUA
-}
+    double ea = pava(umidadeRelativa, es);
+    printf("%.2f PAVA", ea);
+
+}   
 
