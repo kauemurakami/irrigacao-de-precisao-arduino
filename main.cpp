@@ -32,7 +32,7 @@ int main(){
     //DECLIVIDADE DE CURVA DE SATURAÇÃO DE VAPOR DE ÁGUA Kpa/⁰C
     double s = dcsva(es, temperatMedia);
     printf("DCSVA %.2f ", s);
-    //MÉTODO DE PENMAN MONTEITH FAO 56
+    //MÉTODO DE PENMAN MONTEITH FAO 56 mm/dia⁻¹
     double eto = penman(ea,es,s,temperatMedia,velocVento,radiacSolar, umidadeRelativa);
     printf("ETo %.2f ", eto);
 
