@@ -4,7 +4,7 @@
 #include "pava.c"
 #include "dcsva.c"
 #include "penman.c"
-
+#include "vazao.c"
 
 
 //PRESSÃO DE SATURAÇÃO DE VAPOR DE ÁGUA
@@ -13,6 +13,12 @@
 int main(){
     setlocale(LC_ALL, "portuguese");
     
+    //m³/H
+    double const VAZAO = 11.11;
+    //irrig
+    double const VAZAO_COM_CANO = 22.22;
+    //tempo irrig
+
     //Graus Célsius
     double temperatMedia = 26;
     //Porcentagem
