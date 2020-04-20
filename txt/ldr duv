@@ -1,0 +1,2 @@
+Joule = watt * tempo
+Se ajustar o ganho acho que sim, já que a resistência dele depende do fluxo luminoso em cima da área do LDR, e o fluxo luminoso vai ser proporcional à insolação em watt/m^2. Se o ganho for muito alto ele vai saturar na sombra e você não vai conseguir medir nada.
