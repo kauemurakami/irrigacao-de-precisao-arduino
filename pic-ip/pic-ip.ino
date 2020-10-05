@@ -35,8 +35,6 @@ dht sensorDHT;
 boolean estado = false;
 double mediaTemperatura = 0 , mediaUmidade = 0, temperatura = 0, umidade = 0;
 
-
-
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -52,7 +50,6 @@ void setup() {
   //pinrele
   pinMode(pin_rele, OUTPUT);
   digitalWrite(pin_rele, LOW);
-  
   
   //definindo horario inicial apenas uma vez
   //myRTC.setDS1302Time(04, 24, 18, 5, 5, 9, 2019);
@@ -200,7 +197,6 @@ altura_metros= milimetros/1000;
 
 //definição de largura 1 metro
 // definição de comprimento 1 metro
-
 
 metros_cubicos=1*1*altura_metros;
 volume_agua= metros_cubicos*1000;
