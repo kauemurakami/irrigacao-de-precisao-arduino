@@ -9,6 +9,11 @@
 //myRTC(clock, data, rst)
 virtuabotixRTC myRTC(6,7,8);
 
+ //constantes testes
+double radiacSolar = 7.8; //MJ/m^2/dia
+double g = 0;  //fluxo de calor, normalmente desprezivel
+double veloVento = 2; // velocidade do vento em ms/s
+          
 //higometro
 #define analogi A0
 #define digital 15
@@ -29,6 +34,8 @@ dht sensorDHT;
 // variaveis de controle
 boolean estado = false;
 double mediaTemperatura = 0 , mediaUmidade = 0, temperatura = 0, umidade = 0;
+
+
 
 void setup() {
   // put your setup code here, to run once:
@@ -55,11 +62,7 @@ void setup() {
 void loop() {
     
     delay(intervalo);
-    /*
-    //lendo umidade no sensor higometro
-    if(verificaChuva() == 0){
-      
-    }else{*/
+
     //Serial.println(analogRead(analogi));//print higometro    
         myRTC.updateTime();
         int hora = myRTC.hours;
@@ -123,63 +126,66 @@ void loop() {
        Serial.println( mediaUmidade);
     
         if(mediaTemperatura != 0){
-          
-          double evap = dalton(mediaUmidade, mediaTemperatura);
+         
+          double evapt = penman(
+            pressaoSaturacaoES(mediaTemperatura), 
+            pava(mediaUmidade,pressaoSaturacaoES(mediaTemperatura)),
+            dcsva(pressaoSaturacaoES(mediaTemperatura),mediaTemperatura),
+            mediaTemperatura, veloVento, radiacSolar, mediaUmidade);       
           Serial.print("resultado de evaporação de dalton  mm/d: ");
-          Serial.print(evap);
-
-          funcao_volume(evap);
+       
+          //funcao_volume(evap);
 
           digitalWrite(pin_rele,  HIGH);
           delay(4000);
           digitalWrite(pin_rele,  LOW);
           delay(1000);
         }
-
-        
-        
       }
-  //} 
 }
-  
+
 long media(float n1, float n2){
   return (n1+n2)/2;
 }
-  /*calculo da pressão de vapor do ar ea
-   * ea = Ph20 = P⁵ x UR%/100  
-   * Resultado na medida Pa
-   */
-double pressaoVaporDeArEA(double mediaUmidade){
-  double ur = (mediaUmidade/100);
-  double p = 100;
-  //Serial.println(mediaUmidade);
-  //Serial.print("\n ur");
-  //Serial.println(ur);
-  double result = ur * p;
-  return result;
-}
-  /*pressão de saturação à temperatura da superfície es
-   * es = A x 10 ^ ((7,5 x t)/(237,3+t))
-   * Resultado na medida Pa
-   */
-double pressaoSaturacaoES(long mediaTemperatura){
-  long a = 610.8;
-  
-  return (a * (pow(10, expoenteES(mediaTemperatura) )));
+
+//es pressao de saturação de vapor de água Kpa
+double pressaoSaturacaoES(double mediaTemperatura){
+  const double PSICOM = 0.6108;
+  return PSICOM * ( pow(10,((7.5 * temperatura) / (237.3 + temperatura))));
 }
 
-//Calculo do expoente da função ES
-//((7,5 x t)/(237,3+t))
-long expoenteES(long mediaTemperatura){
-    return ((7.5 * mediaTemperatura) / (237.3 + mediaTemperatura));
+//declividade da curva de saturação do vapor de água
+double dcsva(double es, double temperatura){
+  int const PADRAO = 4098;
+  double eq = temperatura + 237.3;
+  return ( (PADRAO * es) / ( pow(eq, 2) ) );
 }
 
-//aqui temos a precipitação de evaporação em mm/ d ou h ou min
-double dalton(double mediaUmidade, double mediaTemperatura){
-  double c = 0.013;
-  double es = pressaoSaturacaoES(mediaTemperatura);
-  double ea = pressaoVaporDeArEA(mediaUmidade);
-  return (c * (es - ea ));
+//ea pressao atual do vapor de agua Kpa
+double pava(double ur, double es){
+    return (es * ur) / 100;
+}
+
+//método de Penman
+double penman(
+    double es, 
+    double ea, 
+    double s, 
+    double temperatura, 
+    double veloVento, 
+    double radiacSolar, 
+    double umidadeRelativa){
+        
+        //CONSTANTES
+        double const CONST1 = 0.408;
+        double const COEF1 = 0.063; //GAMA constante psicométrica Kpa/⁰C
+        double const COEF2 = 0.34;
+        double const G = 0; // FLUXO DE CALOR Desprezivel para valores diários
+        return 
+            ( ((CONST1 * s) * (radiacSolar - G)) + 
+            ( ( (COEF1 * 900 * veloVento) * (es-ea))/ (temperatura + 273) ) )
+            /
+            (s + (COEF1 * (1 + (COEF2 * veloVento))));
 }
 
 void funcao_volume(double milimetros){
