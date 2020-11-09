@@ -2,7 +2,11 @@
 #include <ctype.h>
 #include <math.h>
 
-double vazao(){
 
-    return 1;
+double vazao(double qtLitros){
+
+    //Litros por segundo
+    double const VAZAO_BOMBA = 0.025;
+
+    return (qtLitros/VAZAO_BOMBA);
 }
